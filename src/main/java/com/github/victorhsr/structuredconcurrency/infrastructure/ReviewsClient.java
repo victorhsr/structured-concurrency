@@ -40,11 +40,12 @@ public class ReviewsClient {
         );
     }
 
-    public ReviewsData getReviews(String productId) {
+    public ReviewsData getReviews(String productId) throws InterruptedException {
+        System.out.println("ReviewsClient getting results...");
+        Thread.sleep(180);
         if (!DATA_MAP.containsKey(productId)) {
             throw new IllegalArgumentException(STR."productId not found \{productId}");
         }
-        System.out.println("ReviewsClient getting results...");
         return DATA_MAP.get(productId);
     }
 

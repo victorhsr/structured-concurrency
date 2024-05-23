@@ -17,11 +17,12 @@ public class ProductDetailsClient {
         );
     }
 
-    public ProductDetails getDetails(String productId) {
+    public ProductDetails getDetails(String productId) throws InterruptedException {
+        System.out.println("ProductDetailsClient getting results...");
+        Thread.sleep(200);
         if (!DATA_MAP.containsKey(productId)) {
             throw new IllegalArgumentException(STR."productId not found \{productId}");
         }
-        System.out.println("ProductDetailsClient getting results...");
         return DATA_MAP.get(productId);
     }
 

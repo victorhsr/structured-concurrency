@@ -17,11 +17,11 @@ public class HeroClient {
     }
 
     public HeroData getHeroData(String productId) throws InterruptedException {
-        Thread.sleep(200);
+        System.out.println("HeroClient getting results...");
+        Thread.sleep(150);
         if (!DATA_MAP.containsKey(productId)) {
             throw new IllegalArgumentException(STR."productId not found \{productId}");
         }
-        System.out.println("HeroClient getting results..."+Thread.currentThread().getName());
         return DATA_MAP.get(productId);
     }
 

@@ -16,7 +16,7 @@ public class ProductDetailsContextScope extends StructuredTaskScope<ProductDetai
     private volatile HeroData heroData;
     private volatile ReviewsData reviewsData;
     private volatile ProductDetails productDetails;
-    private List<Throwable> exceptions = new CopyOnWriteArrayList<>();
+    private final List<Throwable> exceptions = new CopyOnWriteArrayList<>();
 
     @Override
     protected void handleComplete(Subtask<? extends ProductDetailsContextComponent> subtask) {
@@ -24,7 +24,6 @@ public class ProductDetailsContextScope extends StructuredTaskScope<ProductDetai
             case Subtask.State.SUCCESS -> onSuccess(subtask);
             case Subtask.State.FAILED -> exceptions.add(subtask.exception());
         }
-
 
         super.handleComplete(subtask);
     }
@@ -34,7 +33,7 @@ public class ProductDetailsContextScope extends StructuredTaskScope<ProductDetai
             case ProductDetails productDetailsFromSubtask -> this.productDetails = productDetailsFromSubtask;
             case HeroData heroDataFromSubTask -> this.heroData = heroDataFromSubTask;
             case ReviewsData reviewsDataFromSubTask -> this.reviewsData = reviewsDataFromSubTask;
-            default -> throw new IllegalStateException("Invalid output for subtask" + subtask);
+            default -> throw new IllegalStateException(STR."Invalid output for subtask \{subtask}");
         }
     }
 
