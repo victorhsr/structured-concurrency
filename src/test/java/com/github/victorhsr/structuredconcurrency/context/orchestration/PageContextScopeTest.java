@@ -1,8 +1,9 @@
 package com.github.victorhsr.structuredconcurrency.context.orchestration;
 
-import com.github.victorhsr.structuredconcurrency.context.ProductDetailsContext;
-import com.github.victorhsr.structuredconcurrency.context.details.ProductDetails;
+import com.github.victorhsr.structuredconcurrency.context.PageContext;
+import com.github.victorhsr.structuredconcurrency.context.details.Page;
 import com.github.victorhsr.structuredconcurrency.context.hero.HeroData;
+import com.github.victorhsr.structuredconcurrency.context.recommendations.Recommendations;
 import com.github.victorhsr.structuredconcurrency.context.reviews.ReviewsData;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,23 +15,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-class ProductDetailsContextScopeTest {
+class PageContextScopeTest {
 
     @Nested
     class HappyPathTests {
 
         @Test
-        void buildContext(@Mock HeroData heroData, @Mock ReviewsData reviewsData, @Mock ProductDetails productDetails) {
+        void buildContext(@Mock HeroData heroData, @Mock ReviewsData reviewsData, @Mock Page productDetails, @Mock Recommendations recommendations) {
             // given
-            ProductDetailsContext expectedResult = new ProductDetailsContext(reviewsData, productDetails, heroData);
+            PageContext expectedResult = new PageContext(reviewsData, productDetails, heroData, recommendations);
 
             // when
-            ProductDetailsContext actual;
+            PageContext actual;
 
-            try (var scope = new ProductDetailsContextScope()) {
+            try (var scope = new PageContextScope()) {
                 scope.fork(() -> heroData);
                 scope.fork(() -> reviewsData);
                 scope.fork(() -> productDetails);
+                scope.fork(() -> recommendations);
                 scope.join();
 
                 actual = scope.getContext();
@@ -47,13 +49,14 @@ class ProductDetailsContextScopeTest {
     class ExceptionFlows {
 
         @Test
-        void shouldFailWhenThereIsNoHeroData(@Mock ReviewsData reviewsData, @Mock ProductDetails productDetails) {
+        void shouldFailWhenThereIsNoHeroData(@Mock ReviewsData reviewsData, @Mock Page productDetails, @Mock Recommendations recommendations) {
             // when + then
-            assertThrows(ProductDetailsException.class, () -> {
-                try (var scope = new ProductDetailsContextScope()) {
+            assertThrows(PageContextException.class, () -> {
+                try (var scope = new PageContextScope()) {
                     scope.fork(() -> null);
                     scope.fork(() -> reviewsData);
                     scope.fork(() -> productDetails);
+                    scope.fork(() -> recommendations);
                     scope.join();
 
                     scope.getContext();
@@ -64,13 +67,14 @@ class ProductDetailsContextScopeTest {
         }
 
         @Test
-        void shouldFailWhenThereIsNoReviewsData(@Mock HeroData heroData, @Mock ProductDetails productDetails) {
+        void shouldFailWhenThereIsNoReviewsData(@Mock HeroData heroData, @Mock Page productDetails, @Mock Recommendations recommendations) {
             // when + then
-            assertThrows(ProductDetailsException.class, () -> {
-                try (var scope = new ProductDetailsContextScope()) {
+            assertThrows(PageContextException.class, () -> {
+                try (var scope = new PageContextScope()) {
                     scope.fork(() -> heroData);
                     scope.fork(() -> null);
                     scope.fork(() -> productDetails);
+                    scope.fork(() -> recommendations);
                     scope.join();
 
                     scope.getContext();
@@ -81,12 +85,31 @@ class ProductDetailsContextScopeTest {
         }
 
         @Test
-        void shouldFailWhenThereIsNoProductDetails(@Mock HeroData heroData, @Mock ReviewsData reviewsData) {
+        void shouldFailWhenThereIsNoProductDetails(@Mock HeroData heroData, @Mock ReviewsData reviewsData, @Mock Recommendations recommendations) {
             // when + then
-            assertThrows(ProductDetailsException.class, () -> {
-                try (var scope = new ProductDetailsContextScope()) {
+            assertThrows(PageContextException.class, () -> {
+                try (var scope = new PageContextScope()) {
                     scope.fork(() -> heroData);
                     scope.fork(() -> reviewsData);
+                    scope.fork(() -> null);
+                    scope.fork(() -> recommendations);
+                    scope.join();
+
+                    scope.getContext();
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+        }
+
+        @Test
+        void shouldFailWhenThereIsNoRecommendations(@Mock HeroData heroData, @Mock Page productDetails, @Mock ReviewsData reviewsData) {
+            // when + then
+            assertThrows(PageContextException.class, () -> {
+                try (var scope = new PageContextScope()) {
+                    scope.fork(() -> heroData);
+                    scope.fork(() -> reviewsData);
+                    scope.fork(() -> productDetails);
                     scope.fork(() -> null);
                     scope.join();
 
