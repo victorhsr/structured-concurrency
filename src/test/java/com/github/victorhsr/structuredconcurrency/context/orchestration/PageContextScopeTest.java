@@ -1,7 +1,7 @@
 package com.github.victorhsr.structuredconcurrency.context.orchestration;
 
 import com.github.victorhsr.structuredconcurrency.context.PageContext;
-import com.github.victorhsr.structuredconcurrency.context.details.Page;
+import com.github.victorhsr.structuredconcurrency.context.details.ProductDetails;
 import com.github.victorhsr.structuredconcurrency.context.hero.HeroData;
 import com.github.victorhsr.structuredconcurrency.context.recommendations.Recommendations;
 import com.github.victorhsr.structuredconcurrency.context.reviews.ReviewsData;
@@ -21,7 +21,7 @@ class PageContextScopeTest {
     class HappyPathTests {
 
         @Test
-        void buildContext(@Mock HeroData heroData, @Mock ReviewsData reviewsData, @Mock Page productDetails, @Mock Recommendations recommendations) {
+        void buildContext(@Mock HeroData heroData, @Mock ReviewsData reviewsData, @Mock ProductDetails productDetails, @Mock Recommendations recommendations) {
             // given
             PageContext expectedResult = new PageContext(reviewsData, productDetails, heroData, recommendations);
 
@@ -49,7 +49,7 @@ class PageContextScopeTest {
     class ExceptionFlows {
 
         @Test
-        void shouldFailWhenThereIsNoHeroData(@Mock ReviewsData reviewsData, @Mock Page productDetails, @Mock Recommendations recommendations) {
+        void shouldFailWhenThereIsNoHeroData(@Mock ReviewsData reviewsData, @Mock ProductDetails productDetails, @Mock Recommendations recommendations) {
             // when + then
             assertThrows(PageContextException.class, () -> {
                 try (var scope = new PageContextScope()) {
@@ -67,7 +67,7 @@ class PageContextScopeTest {
         }
 
         @Test
-        void shouldFailWhenThereIsNoReviewsData(@Mock HeroData heroData, @Mock Page productDetails, @Mock Recommendations recommendations) {
+        void shouldFailWhenThereIsNoReviewsData(@Mock HeroData heroData, @Mock ProductDetails productDetails, @Mock Recommendations recommendations) {
             // when + then
             assertThrows(PageContextException.class, () -> {
                 try (var scope = new PageContextScope()) {
@@ -103,7 +103,7 @@ class PageContextScopeTest {
         }
 
         @Test
-        void shouldFailWhenThereIsNoRecommendations(@Mock HeroData heroData, @Mock Page productDetails, @Mock ReviewsData reviewsData) {
+        void shouldFailWhenThereIsNoRecommendations(@Mock HeroData heroData, @Mock ProductDetails productDetails, @Mock ReviewsData reviewsData) {
             // when + then
             assertThrows(PageContextException.class, () -> {
                 try (var scope = new PageContextScope()) {

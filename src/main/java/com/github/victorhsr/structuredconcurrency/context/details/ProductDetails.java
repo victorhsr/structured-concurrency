@@ -4,5 +4,5 @@ import com.github.victorhsr.structuredconcurrency.context.orchestration.PageCont
 
 import java.util.Map;
 
-public record Page(Map<String, String> characteristics) implements PageContextComponent {
+public record ProductDetails(Map<String, String> characteristics) implements PageContextComponent {
 }

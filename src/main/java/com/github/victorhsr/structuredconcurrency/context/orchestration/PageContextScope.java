@@ -1,7 +1,7 @@
 package com.github.victorhsr.structuredconcurrency.context.orchestration;
 
 import com.github.victorhsr.structuredconcurrency.context.PageContext;
-import com.github.victorhsr.structuredconcurrency.context.details.Page;
+import com.github.victorhsr.structuredconcurrency.context.details.ProductDetails;
 import com.github.victorhsr.structuredconcurrency.context.hero.HeroData;
 import com.github.victorhsr.structuredconcurrency.context.recommendations.Recommendations;
 import com.github.victorhsr.structuredconcurrency.context.reviews.ReviewsData;
@@ -16,7 +16,7 @@ public class PageContextScope extends StructuredTaskScope<PageContextComponent> 
 
     private volatile HeroData heroData;
     private volatile ReviewsData reviewsData;
-    private volatile Page productDetails;
+    private volatile ProductDetails productDetails;
     private volatile Recommendations recommendations;
     private final List<Throwable> exceptions = new CopyOnWriteArrayList<>();
 
@@ -32,7 +32,7 @@ public class PageContextScope extends StructuredTaskScope<PageContextComponent> 
 
     private void onSuccess(Subtask<? extends PageContextComponent> subtask) {
         switch (subtask.get()) {
-            case Page productDetailsFromSubtask -> this.productDetails = productDetailsFromSubtask;
+            case ProductDetails productDetailsFromSubtask -> this.productDetails = productDetailsFromSubtask;
             case HeroData heroDataFromSubTask -> this.heroData = heroDataFromSubTask;
             case ReviewsData reviewsDataFromSubTask -> this.reviewsData = reviewsDataFromSubTask;
             case Recommendations recommendationsFromTask -> this.recommendations = recommendationsFromTask;
