@@ -18,12 +18,16 @@ public class Loader {
                 new RecommendationsService(new RecommendationsClientA(), new RecommendationsClientB())
         );
 
+        // happy path
         System.out.println(STR."Built context = \{pageContextService.getPageContext("1")}");
         System.out.println("-----");
+        // Hero missing
         System.out.println(STR."Built context = \{pageContextService.getPageContext("2")}");
         System.out.println("-----");
+        // ProductDetails missing
         System.out.println(STR."Built context = \{pageContextService.getPageContext("3")}");
         System.out.println("-----");
+        // Reviews and Recommendations missing
         System.out.println(STR."Built context = \{pageContextService.getPageContext("4")}");
     }
 
